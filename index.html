@@ -67,7 +67,7 @@
     <div id="appcontainer">
         <!-- <canvas id="screenShotCanvas"></canvas> -->
         <div id="touchoverlay"></div>
-        <video id="videoBackground"></video>
+        <video id="videoBackground" playsinline></video>
         <!-- embedded -->
         <a-scene embedded transparent="true">
             <a-camera touchEnabled="false" fov="60"></a-camera>
@@ -157,7 +157,7 @@
 <script>
     let videoBackground = document.querySelector('#videoBackground');
     //{facingMode: { exact: "environment" }}
-    navigator.mediaDevices.getUserMedia({ video: {facingMode: { exact: "environment" }}, audio: false })
+    navigator.mediaDevices.getUserMedia({ video: {facingMode: { ideal: "environment" }}, audio: false })
       .then((stream) => {
         videoBackground.srcObject = stream;
         videoBackground.play();
