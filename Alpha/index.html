@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <script src="https://aframe.io/releases/1.4.0/aframe.min.js"></script>
+</head>
+
+<body style="background-color: rgba(137, 43, 226, 0);">
+    <p id="log" style="z-index: 5;"></p>
+    <video id="videoBackground" style="position: fixed; top: 0px; bottom: 0px; z-index:-1" ></video>
+
+
+    <a-scene transparent="true">
+
+        <!-- the rug -->
+        <a-box 
+        scale="2 2 2"
+        style="z-index: 2;"
+        src="./BOHEM - BH04A.png"
+        position="0 0 -1.5" 
+        normal-map="./Fabric_Rug_006_normal.jpg"
+        normal-texture-repeat="10 20"
+        roughness="0.8"
+        width="0.8" height="0.01" depth="1.5">
+
+            <!-- depth overlock 1 -->
+            <a-cylinder   
+            src="./Fabric_Knitted_002_COLOR.jpg"
+            normal-map="./normalmap2.png"
+            normal-texture-repeat="1 40"
+            repeat="1 40"
+            color="#c7bfb9"
+            roughness="0.4"
+
+            height="1.507" radius="0.007"
+            rotation="90 0 0"
+            position="0.4 0 0"
+            scale="1.1 1 0.7"
+            ></a-cylinder>
+
+            <!-- depth overlock 2 -->
+            <a-cylinder
+            src="./Fabric_Knitted_002_COLOR.jpg"
+            normal-map="./normalmap2.png"
+            normal-texture-repeat="1 40"
+            repeat="1 40"
+            color="#c7bfb9"
+            roughness="0.4"
+
+            height="1.507" radius="0.007"
+            rotation="90 0 0"
+            position="-0.4 0 0"
+            scale="1.1 1 0.7"
+            ></a-cylinder>
+
+            <!-- width overlock 1 -->
+            <a-cylinder
+            src="./Fabric_Knitted_002_COLOR.jpg"
+            normal-map="./normalmap2.png"
+            normal-texture-repeat="1 20"
+            repeat="1 20"
+            color="#c7bfb9"
+            roughness="0.4"
+
+            height="0.807" radius="0.007"
+            rotation="0 0 90"
+            position="0 0 0.75"
+            scale="0.7 1 1.1"
+            
+            ></a-cylinder>
+
+            <!-- width overlock 2 -->
+            <a-cylinder
+            src="./Fabric_Knitted_002_COLOR.jpg"
+            normal-map="./normalmap2.png"
+            normal-texture-repeat="1 20"
+            repeat="1 20"
+            color="#c7bfb9"
+            roughness="0.4"
+
+            height="0.807" radius="0.007"
+            rotation="0 0 90"
+            position="0 0 -0.75"
+            scale="0.7 1 1.1"
+            ></a-cylinder>
+        </a-box>
+    </a-scene>
+</body>
+<script>
+  const pLog = document.querySelector("#log");
+  const videoBackground = document.querySelector('#videoBackground');
+    navigator.mediaDevices.getUserMedia({ video: { facingMode: { exact: "environment" } }, audio: false })
+      .then((stream) => {
+        videoBackground.srcObject = stream;
+        videoBackground.play();
+      })
+      .catch((error) => {
+        pLog.innerHTML += error;
+      });
+</script>
+
+</html>
