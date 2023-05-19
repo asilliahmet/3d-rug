@@ -70,15 +70,130 @@
         <video id="videoBackground" playsinline></video>
         <!-- embedded -->
         <a-scene embedded transparent="true">
-            <a-camera touchEnabled="false" fov="60"></a-camera>
+            <a-camera camera-movement touchEnabled="false" fov="60"></a-camera>
+
+
+            <a-plane
+            id="placementPointer"
+            color="#c41a49"
+            height = "0.3"
+            width = "0.3"
+            rotation = "-180 0 180"
+            position="0 0 5"
+            src="./Images/rugPointer.png"
+            transparent = "true"
+            emissive = "#c41a49"
+            emissiveIntensity ="1"
+            side="double">
+                <a-plane
+                color="#91173a"
+                height = "0.3"
+                width = "0.3"
+                src="./Images/rugPointer.png"
+                transparent = "true"
+                position = "0 0 0.010"
+                emissive = "#91173a"
+                emissiveIntensity ="0.1"
+                side="double"
+                ></a-plane>
+                <a-plane
+                color="#91173a"
+                height = "0.3"
+                width = "0.3"
+                src="./Images/rugPointer.png"
+                transparent = "true"
+                position = "0 0 0.015"
+                emissive = "#91173a"
+                emissiveIntensity ="0.1"
+                side="double"
+                ></a-plane>
+                <a-plane
+                color="#91173a"
+                height = "0.3"
+                width = "0.3"
+                src="./Images/rugPointer.png"
+                transparent = "true"
+                position = "0 0 0.020"
+                emissive = "#91173a"
+                emissiveIntensity ="0.1"
+                side="double"
+                ></a-plane>
+                <a-plane
+                color="#91173a"
+                height = "0.3"
+                width = "0.3"
+                src="./Images/rugPointer.png"
+                transparent = "true"
+                position = "0 0 0.025"
+                emissive = "#91173a"
+                emissiveIntensity ="0.1"
+                side="double"
+                ></a-plane>
+                <a-plane
+                color="#91173a"
+                height = "0.3"
+                width = "0.3"
+                src="./Images/rugPointer.png"
+                transparent = "true"
+                position = "0 0 0.030"
+                emissive = "#91173a"
+                emissiveIntensity ="0.1"
+                side="double"
+                ></a-plane>
+                <a-plane
+                color="#91173a"
+                height = "0.3"
+                width = "0.3"
+                src="./Images/rugPointer.png"
+                transparent = "true"
+                position = "0 0 0.035"
+                emissive = "#91173a"
+                emissiveIntensity ="0.1"
+                side="double"
+                ></a-plane>
+                <a-plane
+                color="#91173a"
+                height = "0.3"
+                width = "0.3"
+                src="./Images/rugPointer.png"
+                transparent = "true"
+                position = "0 0 0.040"
+                emissive = "#91173a"
+                emissiveIntensity ="0.1"
+                side="double"
+                ></a-plane>
+                <a-plane
+                color="#91173a"
+                height = "0.3"
+                width = "0.3"
+                src="./Images/rugPointer.png"
+                transparent = "true"
+                position = "0 0 0.045"
+                emissive = "#91173a"
+                emissiveIntensity ="0.1"
+                side="double"
+                ></a-plane>
+                <a-plane
+                color="#c41a49"
+                height = "0.3"
+                width = "0.3"
+                src="./Images/rugPointer.png"
+                transparent = "true"
+                position = "0 0 0.050"
+                emissive = "#c41a49"
+                emissiveIntensity ="0.1"
+                side="double"
+                ></a-plane>
+            </a-plane>
 
             <!-- the rug -->
-            <a-box 
+            <a-box
+            visible="false"
             id="therug"
             scale="1.5 1 1.5"
             style="z-index: 2;"
             src="./Images/BOHEM - BH04A.png"
-            position="0 1 0" 
+            position="0 0 0" 
             normal-map="./Images/Fabric_Rug_006_normal.jpg"
             normal-texture-repeat="10 20"
             roughness="0.8"
@@ -156,7 +271,6 @@
 </body>
 <script>
     let videoBackground = document.querySelector('#videoBackground');
-    //{facingMode: { exact: "environment" }}
     navigator.mediaDevices.getUserMedia({ video: {facingMode: { ideal: "environment" }}, audio: false })
       .then((stream) => {
         videoBackground.srcObject = stream;
