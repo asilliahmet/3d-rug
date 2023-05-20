@@ -1,0 +1,53 @@
+@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300&family=Titillium+Web:wght@600&display=swap');
+
+#rugSelector{
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-around;
+    width: 100vw;
+}
+
+#productSelector{
+    width: 100%;
+    /* border: 1px solid green; */
+    /* height: 150px; */
+    overflow-x: scroll;
+    overflow-y: hidden;
+    display: flex;
+    margin-top: 10px;
+}
+
+
+
+.product img{
+    height: 100px;
+    width: 100px;
+    object-fit: contain;
+}
+
+.product * {
+    z-index: -1;
+    margin: 0px;
+}
+
+.product{
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    z-index: 2;
+    gap: 3px;
+    border: 3px solid #c41a4a00;
+    box-sizing: border-box;
+    padding: 2px;
+}
+
+.selectedProduct{
+    border: 3px solid #c41a49;
+}
+
+.product p {
+    text-align: center;
+    font-family: "Poppins";
+    font-size: 12px;
+}

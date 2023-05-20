@@ -9,6 +9,7 @@ const log = document.querySelector("#log");
 
 let touchStartXY = [0,0];
 let moveCoeff = 0.01;
+let camYaw;
 
 AFRAME.registerComponent("camera-movement", {
     tick: ()=>{
@@ -27,7 +28,7 @@ AFRAME.registerComponent("camera-movement", {
 
         rugPointer.setAttribute("rotation", `${rad2Deg(camRotation.x/2) -180} ${rad2Deg(camRotation.y)} 180`);
         
-        // log.innerHTML = `${rugPointerPos.x} ${rugPointerPos.x} ${rugPointerPos.x}`;
+        // log.innerHTML = `${rad2Deg(camRotation.y)}`;
     },
 });
 
@@ -127,7 +128,16 @@ function retMin(...args){
         retVal = args[i];
     }
     return retVal;
-}
+};
+
+function retMax(...args){
+    let retVal = -Infinity;
+    for (let i=0; i<args.length; i++){
+        if (args[i]<retVal) continue;
+        retVal = args[i];
+    }
+    return retVal;
+};
 
 function rad2Deg(rad){
     let deg = rad*(180/3.141592) + 360;
@@ -155,23 +165,89 @@ function rotatePoint(x, y, centerX, centerY, angleRadians) {
   
     // Return the new x and y values
     return { x: finalX, y: finalY };
-  }
+};
+
+function setRugSize(width, depth){
+    theRug.setAttribute("depth", `${depth}`);
+    theRug.setAttribute("width", `${width}`);
+    let overlocks = document.querySelectorAll("#therug a-cylinder");
+
+    overlocks[0].setAttribute("height", `${depth + 0.007}`);
+    overlocks[0].setAttribute("position", `${width/2} 0 0`);
+
+    overlocks[1].setAttribute("height", `${depth + 0.007}`);
+    overlocks[1].setAttribute("position", `${-width/2} 0 0`);
+
+    overlocks[2].setAttribute("height", `${width + 0.007}`);
+    overlocks[2].setAttribute("position", `0 0 ${depth/2}`);
+
+    overlocks[3].setAttribute("height", `${width + 0.007}`);
+    overlocks[3].setAttribute("position", `0 0 ${-depth/2}`);
+};
+
+window.notifySize = (sizeText)=>{
+    let sizes = sizeText.split("x");
+    for (i=0;i<2;i++) sizes[i] = +sizes[i];
+
+    setRugSize(retMin(sizes[0], sizes[1])/100, retMax(sizes[0], sizes[1])/100);
+};
+
+window.notifyProduct = (productSrc)=>{
+    theRug.setAttribute("src", "#loadingRug");
+
+    fetch(productSrc)
+    .then(response => {
+        console.log(response);
+      return response.blob();
+    })
+    .then(blob => {
+      const reader = new FileReader();
+  
+      reader.onloadend = function() {
+        const base64data = reader.result;
+  
+        // Create the Base64 object URL
+        const objectURL = `${base64data}`;
+  
+        console.log(objectURL);
+        theRug.setAttribute("src", objectURL);
+        
+        // Use the Base64 object URL as needed
+        
+      };
+  
+      reader.readAsDataURL(blob);
+    })
+    .catch(error => {
+      console.log('Error:', error);
+    });
+
+    // theRug.setAttribute("src", productSrc);
+};
 
 touchOverlay.addEventListener("touchstart", (event) => {
     event.stopPropagation();
     let touch = event.touches[0];
     touchStartXY[0] = touch.clientX;
     touchStartXY[1] = touch.clientY;
+    camYaw = 2*Math.PI - cameraEl.object3D.rotation.y;
 });
 
 touchOverlay.addEventListener("touchmove", (event) => {
     event.stopPropagation();
     let touch = event.touches[0];
     let rugPosition = theRug.getAttribute("position");
+    let rotatedTouch = rotatePoint(
+        touch.clientX - touchStartXY[0],
+        touch.clientY - touchStartXY[1],
+        0,
+        0,
+        camYaw
+    );
     // log.innerHTML += `${moveCoeff*(touch.clientX - touchStartXY[0])} 0 ${moveCoeff*(touch.clientY - touchStartXY[1])}`;
     // theRug.setAttribute("position", `${moveCoeff*touch.clientX - touchStartXY[0]} 0 ${moveCoeff*touch.clientY - touchStartXY[1]}`);
-    theRug.setAttribute("position", `${rugPosition.x + moveCoeff*(touch.clientX - touchStartXY[0])} 0 ${rugPosition.z + moveCoeff*(touch.clientY - touchStartXY[1])}`);
-    log.innerHTML = `${rugPosition.x + moveCoeff*(touch.clientX - touchStartXY[0])} 0 ${rugPosition.z + moveCoeff.y*(touch.clientY - touchStartXY[1])}`;
+    theRug.setAttribute("position", `${rugPosition.x + moveCoeff*(rotatedTouch.x)} 0 ${rugPosition.z + moveCoeff*(rotatedTouch.y)}`);
+    log.innerHTML = `${rugPosition.x + moveCoeff*(rotatedTouch.x)} 0 ${rugPosition.z + moveCoeff*(rotatedTouch.y)}`;
     touchStartXY[0] = touch.clientX;
     touchStartXY[1] = touch.clientY;
 });

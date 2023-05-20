@@ -6,6 +6,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1, user-scalable=no">
     <title>Document</title>
     <script src="https://aframe.io/releases/1.4.0/aframe.min.js"></script>
+    <script src="https://cdn.sheetjs.com/xlsx-latest/package/dist/xlsx.full.min.js"></script>
     <script src="./UIscript.js" defer></script>
 
     <link rel="stylesheet" href="./rotateButtonComponent/rotateBtn.css">
@@ -13,6 +14,9 @@
 
     <link rel="stylesheet" href="./pauseResumeBtn/pauseResumeBtn.css">
     <script src="./pauseResumeBtn/pauseResumeBtn.js" defer></script>
+
+    <link rel="stylesheet" href="./rugSelectorComponent/rugSelectorComponent.css">
+    <script src="./rugSelectorComponent/rugSelectorComponent.js" defer></script>
     
     <style>
         body{
@@ -56,13 +60,16 @@
             display: flex;
             justify-content: space-around;
         }
+        #bottomui *{
+            width: 80px;
+        }
         #rotateDiv{
             background-color: aqua;
         }
     </style>
 </head>
 <body>
-    <div>MAJOLIKA EVIMDE GOR, ALPHA TEST VERSIYON</div>
+    <div id="rugSelector"></div>
     <div id="log"></div>
     <div id="appcontainer">
         <!-- <canvas id="screenShotCanvas"></canvas> -->
@@ -70,6 +77,9 @@
         <video id="videoBackground" playsinline></video>
         <!-- embedded -->
         <a-scene embedded transparent="true">
+            <a-assets>
+                <img src="./Images/loadingRug.png" id="loadingRug">
+            </a-assets>
             <a-camera camera-movement touchEnabled="false" fov="60"></a-camera>
 
 
@@ -192,16 +202,16 @@
             id="therug"
             scale="1.5 1 1.5"
             style="z-index: 2;"
-            src="./Images/BOHEM - BH04A.png"
+            src="#loadingRug"
             position="0 0 0" 
             normal-map="./Images/Fabric_Rug_006_normal.jpg"
             normal-texture-repeat="10 20"
             roughness="0.8"
             rotation="0 90 0"
             width="0.8" height="0.01" depth="1.5">
-    
+
                 <!-- depth overlock 1 -->
-                <a-cylinder   
+                <a-cylinder
                 src="./Images/Fabric_Knitted_002_COLOR.jpg"
                 normal-map="./Images/normalmap2.png"
                 normal-texture-repeat="1 40"
