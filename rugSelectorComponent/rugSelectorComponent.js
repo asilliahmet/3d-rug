@@ -120,7 +120,7 @@ function getProducts(){
     document.querySelector(".product").click();
 };
 
-getXlsxData("/rugSelectorComponent/ikas-urunler.xlsx",(file)=>{
+getXlsxData("./ikas-urunler.xlsx",(file)=>{
     productList = file;
     buildCollections(file)
 });
