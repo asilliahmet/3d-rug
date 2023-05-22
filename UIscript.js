@@ -7,7 +7,7 @@ const rugPointer = document.querySelector("#placementPointer");
 
 const log = document.querySelector("#log");
 
-let touchStartXY = [0,0];
+let pastTouches;
 let moveCoeff = 0.01;
 let camYaw;
 
@@ -31,10 +31,6 @@ AFRAME.registerComponent("camera-movement", {
         // log.innerHTML = `${rad2Deg(camRotation.y)}`;
     },
 });
-
-window.btnOnRotate = (btnAngle) => {
-    theRug.setAttribute("rotation", `0 ${360 - btnAngle} 0`);
-};
 
 async function downloadCanvas(targetCanvas){
     let pngURL = await targetCanvas.toDataURL();
@@ -108,6 +104,7 @@ function toggleTracking(order){
         let rugPointerPos = rugPointer.object3D.position;
         let camRotation = cameraEl.object3D.rotation;
         putRugPosition(rugPointerPos.x, rad2Deg(camRotation.y), rugPointerPos.z);
+        camYaw = cameraEl.object3D.rotation.y;
         return;
     }
     cameraEl.setAttribute("look-controls","");
@@ -209,7 +206,6 @@ window.notifyProduct = (productSrc)=>{
         // Create the Base64 object URL
         const objectURL = `${base64data}`;
   
-        console.log(objectURL);
         theRug.setAttribute("src", objectURL);
         
         // Use the Base64 object URL as needed
@@ -225,29 +221,67 @@ window.notifyProduct = (productSrc)=>{
     // theRug.setAttribute("src", productSrc);
 };
 
+function retunRayDegrees(point1, point2){
+    let deltax = point2.x-point1.x;
+    let deltay = point2.y-point1.y;
+    // let posNegCoef = (deltax/Math.abs(deltax)) * (deltay/Math.abs(deltay));
+    // return Math.atan(deltay,deltax);
+    return ((Math.atan(deltay/deltax) * -180) / Math.PI);
+};
+
 touchOverlay.addEventListener("touchstart", (event) => {
-    event.stopPropagation();
-    let touch = event.touches[0];
-    touchStartXY[0] = touch.clientX;
-    touchStartXY[1] = touch.clientY;
-    camYaw = 2*Math.PI - cameraEl.object3D.rotation.y;
-});
+     event.stopPropagation();
+     pastTouches = event.touches;
+ });
 
 touchOverlay.addEventListener("touchmove", (event) => {
     event.stopPropagation();
-    let touch = event.touches[0];
-    let rugPosition = theRug.getAttribute("position");
-    let rotatedTouch = rotatePoint(
-        touch.clientX - touchStartXY[0],
-        touch.clientY - touchStartXY[1],
+
+    let totalX = 0;
+    let totalY = 0;
+
+    for (i=0; i<event.touches.length; i++){
+        totalX += event.touches[i].clientX;
+        totalY += event.touches[i].clientY;
+    };
+
+    let currentAvgTouch = {
+        x: totalX / event.touches.length,
+        y: totalY / event.touches.length,
+    };
+
+    totalX = 0;
+    totalY = 0;
+
+    for (i=0; i<pastTouches.length; i++){
+        totalX += pastTouches[i].clientX;
+        totalY += pastTouches[i].clientY;
+    };
+
+    let pastAvgTouch = {
+        x: totalX / pastTouches.length,
+        y: totalY / pastTouches.length,
+    };
+
+    let delta = rotatePoint(
+        (currentAvgTouch.x - pastAvgTouch.x),
+        (currentAvgTouch.y - pastAvgTouch.y),
         0,
         0,
-        camYaw
+        -camYaw,
     );
-    // log.innerHTML += `${moveCoeff*(touch.clientX - touchStartXY[0])} 0 ${moveCoeff*(touch.clientY - touchStartXY[1])}`;
-    // theRug.setAttribute("position", `${moveCoeff*touch.clientX - touchStartXY[0]} 0 ${moveCoeff*touch.clientY - touchStartXY[1]}`);
-    theRug.setAttribute("position", `${rugPosition.x + moveCoeff*(rotatedTouch.x)} 0 ${rugPosition.z + moveCoeff*(rotatedTouch.y)}`);
-    log.innerHTML = `${rugPosition.x + moveCoeff*(rotatedTouch.x)} 0 ${rugPosition.z + moveCoeff*(rotatedTouch.y)}`;
-    touchStartXY[0] = touch.clientX;
-    touchStartXY[1] = touch.clientY;
-});
+
+    theRug.object3D.position.x += moveCoeff*delta.x;
+    theRug.object3D.position.z += moveCoeff*delta.y;
+
+    if (event.touches.length<2 || pastTouches.length<2){
+        pastTouches = event.touches;
+        return;
+    }
+
+    let currentAlpha = retunRayDegrees({x: event.touches[1].clientX, y: event.touches[1].clientY}, {x: event.touches[0].clientX, y: event.touches[0].clientY});
+
+    theRug.setAttribute("rotation", `0 ${currentAlpha + rad2Deg(camYaw)} 0`);
+
+    pastTouches = event.touches;
+}); 
