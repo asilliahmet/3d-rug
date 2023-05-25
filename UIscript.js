@@ -83,7 +83,6 @@ function takeScreenShot(){
         requestAnimationFrame(async ()=>{
             await captureAFrame();
             await downloadCanvas(ssCanvas);
-            console.log(ssCanvas);
             await document.querySelector("body").removeChild(ssCanvas);
             delete ssCanvas;
         });
@@ -235,11 +234,13 @@ function retunRayDegrees(point1, point2){
 };
 
 touchOverlay.addEventListener("touchstart", (event) => {
-     event.stopPropagation();
-     pastTouches = event.touches;
+    event.preventDefault();
+    event.stopPropagation();
+    pastTouches = event.touches;
  });
 
 touchOverlay.addEventListener("touchmove", (event) => {
+    event.preventDefault();
     event.stopPropagation();
 
     let totalX = 0;
