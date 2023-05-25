@@ -1,4 +1,6 @@
 let productList;
+let firstHelpDisplayed = 0;
+let productQueried = 0;
 
 function getXlsxData (filePath, callBack){
     fetch(filePath)
@@ -112,13 +114,56 @@ function getProducts(){
         productSelector.appendChild(productBox);
         productBox.addEventListener("click", ()=>{
             window.notifyProduct(productList[i][3]);
+            console.log(productBox.textContent);
+            let productSlug = productBox.textContent.toLowerCase();
+            productSlug = productSlug.split(` `);
+            if (productSlug[0] == "ikonplus") productSlug[0] == "ikon-plus";
+            productSlug = productSlug.join("-");
+            document.querySelector("#goToProduct")
+                .setAttribute("href", `https://majolika.com.tr/${productSlug}`);
             let selectedProduct = document.querySelector(".selectedProduct");
             if (selectedProduct) selectedProduct.classList.remove("selectedProduct");
             productBox.classList.add("selectedProduct");
         });
     };
     document.querySelector(".product").click();
+    console.log("productselection");
+    if (!firstHelpDisplayed){
+        displayFirstHelp();
+        firstHelpDisplayed++;
+    }
+    if (!productQueried){
+        productQueried++;
+        setQueryProduct();
+    }
 };
+
+function setQueryProduct(){
+    let search = window.location.search;
+    search = search.slice(1);
+    console.log(search);
+    if (!search) return;
+    let productName = search.toUpperCase().split("-");
+    if (productName.length == 3) productName = [productName[0]+productName[1],productName[2]];
+    let collections = document.querySelectorAll("#collectionSelect option");
+    console.log(collections);
+    for (let i=0; i<collections.length; i++){
+        if (collections[i].textContent == productName[0]){
+            document.querySelector("#collectionSelect").selectedIndex = i;
+            break;
+        }
+    };
+    buildSizes();
+    getProducts();
+    let productNames = document.querySelectorAll(".product p");
+    
+    for (let i=0; i<productNames.length; i++){
+        if (productNames[i].textContent == `${productName[0]} ${productName[1]}`){
+            productNames[i].click();
+            break;
+        }
+    }
+}
 
 getXlsxData("./ikas-urunler.xlsx",(file)=>{
     productList = file;

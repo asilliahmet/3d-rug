@@ -10,6 +10,7 @@ const log = document.querySelector("#log");
 let pastTouches;
 let moveCoeff = 0.01;
 let camYaw;
+let secondHelpDisplayed = 0;
 
 AFRAME.registerComponent("camera-movement", {
     tick: ()=>{
@@ -92,6 +93,10 @@ function takeScreenShot(){
 }
 
 window.pauseResumeEvent = (order) => {
+    if(!secondHelpDisplayed){
+        displaySecondHelp();
+        secondHelpDisplayed++;
+    }
     toggleTracking(order);
 };
 
